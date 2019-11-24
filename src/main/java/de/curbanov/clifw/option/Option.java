@@ -30,12 +30,12 @@ public class Option {
         return this.required;
     }
 
-    public boolean hasShortName() { return this.optionShort != '\u0000'; }
+    public boolean hasShortName() { return this.optionShort != 0; }
 
     public boolean hasLongName() { return !this.optionLong.isEmpty(); }
 
     public String getShortName() {
-        return String.valueOf(this.optionShort);
+        return hasShortName() ? String.valueOf(this.optionShort) : "";
     }
 
     public String getLongName() {
@@ -47,8 +47,10 @@ public class Option {
     public int getArgsCount() { return this.args.size(); }
 
     public Class getArgType(int index) {
-        if (!hasArgs() || index < 0 || index >= this.args.size()) {
-            throw new IllegalArgumentException();
+        if (!hasArgs()) {
+            throw new UnsupportedOperationException();
+        } else if (index < 0 || index >= this.args.size()) {
+            throw new IndexOutOfBoundsException();
         }
 
         return this.args.get(index);
