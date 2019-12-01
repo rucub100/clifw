@@ -58,8 +58,8 @@ public class CLI {
                 throw new UnsupportedOperationException();
             }
 
-            ArgsParser parser = new ArgsParser();
-            result = parser.parse(this.args, this.schema, this.options);
+            ArgsParser parser = new ArgsParser(this.args, this.schema, this.options);
+            result = parser.parse();
         }
     }
 
