@@ -2,7 +2,6 @@ package de.curbanov.clifw;
 
 import de.curbanov.clifw.option.Option;
 
-import de.curbanov.clifw.parsing.Result;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
