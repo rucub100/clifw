@@ -4,61 +4,34 @@ import java.util.List;
 
 public class Option {
 
-    private final char optionShort;
-    private final String optionLong;
-    private final String description;
-    private final boolean required;
-    private final List<Class> args;
+    private final Opt blueprint;
+    private final List<String> args;
 
-    Option(OptionBuilderBase builder) {
-        this.optionShort = builder.getShortId();
-        this.optionLong = builder.getLongId();
-        this.description = builder.getDescription();
-        this.required = builder.isRequired();
-        this.args = builder.getArgs();
+    public Option(Opt opt, List<String> args) {
+        this.blueprint = opt;
+        this.args = args;
     }
 
-    public static DefaultOptionBuilder useChar(char opt) {
-        return new DefaultOptionBuilder().shortId(opt);
+    public Option(Opt opt) {
+        this(opt, null);
     }
 
-    public static DefaultOptionBuilder useName(String name) {
-        return new DefaultOptionBuilder().longId(name);
+    public Opt getBlueprint()
+    {
+        return this.blueprint;
     }
 
-    public boolean isRequired() {
-        return this.required;
+    public String getId() {
+        return this.blueprint.hasShortName() ?
+                this.blueprint.getShortName() :
+                this.blueprint.getLongName();
     }
 
-    public boolean hasShortName() { return this.optionShort != 0; }
-
-    public boolean hasLongName() { return !this.optionLong.isEmpty(); }
-
-    public String getShortName() {
-        return hasShortName() ? String.valueOf(this.optionShort) : "";
+    public boolean hasArgs() {
+        return !(args == null || args.isEmpty());
     }
 
-    public String getLongName() {
-        return this.optionLong;
-    }
-
-    public boolean hasArgs() { return this.args.size() > 0; }
-
-    public int getArgsCount() { return this.args.size(); }
-
-    public Class getArgType(int index) {
-        if (!hasArgs()) {
-            throw new UnsupportedOperationException();
-        } else if (index < 0 || index >= this.args.size()) {
-            throw new IndexOutOfBoundsException();
-        }
-
-        return this.args.get(index);
-    }
-
-    @Override
-    public String toString() {
-        return (this.optionShort == '-') ? "" : "-" + this.optionShort + ", " +
-                this.optionLong + "\t" + this.description;
+    public List<String> getArgs() {
+        return args;
     }
 }

@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 public class Args implements Iterable<String> {
 
-    public static final Args EMPTY = new Args(null);
+    public static final Args EMPTY = new Args(new String[] {});
 
     private final String[] args;
 
@@ -17,7 +17,7 @@ public class Args implements Iterable<String> {
     }
 
     public Iterator<String> iterator() {
-        return new Iterator<String>() {
+        return new Iterator<>() {
 
             private int pos = 0;
 

@@ -2,9 +2,10 @@ package de.curbanov.clifw.parsing;
 
 import de.curbanov.clifw.Args;
 import de.curbanov.clifw.Schema;
-import de.curbanov.clifw.option.Option;
+import de.curbanov.clifw.argument.Arg;
+import de.curbanov.clifw.option.Opt;
 
-import de.curbanov.clifw.option.UserOption;
+import de.curbanov.clifw.option.Option;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -18,33 +19,30 @@ public class ArgsParserTest {
     public void parseSingleOption() {
         Args args = new Args(new String[] { "-a" });
         Schema schema = Schema.OPTIONS;
-        Collection<Option> options = List.of(Option.useChar('a').build());
+        Collection<Opt> opts = List.of(Opt.useChar('a').build());
 
-        ArgsParser parser = new ArgsParser(args, schema, options);
+        ArgsParser parser = new ArgsParser(args, schema, opts, null);
         Result result = parser.parse();
 
         assertTrue(
                 "result must contain user options",
-                result.hasUserOptions());
+                result.hasOptions());
         assertTrue(
                 "result must contain exactly one user option",
-                result.getUserOptions().size() == 1);
+                result.getOptions().size() == 1);
         assertFalse(
                 "user option must not have args",
-                result.getUserOptions().get(0).hasArgs());
-        assertTrue(
-                "user option is short",
-                result.getUserOptions().get(0).isShort());
-        assertEquals("a", result.getUserOptions().get(0).getId());
+                result.getOptions().get(0).hasArgs());
+        assertEquals("a", result.getOptions().get(0).getId());
     }
 
     @Test(expected = ParsingException.class)
     public void unexpectedOption() {
         Args args = new Args(new String[] { "-x" });
         Schema schema = Schema.OPTIONS;
-        Collection<Option> options = List.of(Option.useChar('a').build());
+        Collection<Opt> opts = List.of(Opt.useChar('a').build());
 
-        ArgsParser parser = new ArgsParser(args, schema, options);
+        ArgsParser parser = new ArgsParser(args, schema, opts, null);
         parser.parse();
     }
 
@@ -52,11 +50,11 @@ public class ArgsParserTest {
     public void missingRequiredOption() {
         Args args = new Args(new String[] { "-a" });
         Schema schema = Schema.OPTIONS;
-        Collection<Option> options = List.of(
-                Option.useChar('a').build(),
-                Option.useChar('b').required().addArgument(int.class).build());
+        Collection<Opt> opts = List.of(
+                Opt.useChar('a').build(),
+                Opt.useChar('b').required().addArg(Arg.of(int.class).build()).build());
 
-        ArgsParser parser = new ArgsParser(args, schema, options);
+        ArgsParser parser = new ArgsParser(args, schema, opts, null);
         parser.parse();
     }
 
@@ -64,19 +62,18 @@ public class ArgsParserTest {
     public void parsingOptionWithArg() {
         Args args = new Args(new String[] { "-a", "arg" });
         Schema schema = Schema.OPTIONS;
-        Collection<Option> options = List.of(
-                Option.useChar('a')
+        Collection<Opt> opts = List.of(
+                Opt.useChar('a')
                         .required()
-                        .addArgument(String.class)
+                        .addArg(Arg.of(String.class).build())
                         .build());
-        ArgsParser parser = new ArgsParser(args, schema, options);
+        ArgsParser parser = new ArgsParser(args, schema, opts, null);
         Result result = parser.parse();
 
-        assertTrue(result.hasUserOptions());
-        assertEquals(1, result.getUserOptions().size());
+        assertTrue(result.hasOptions());
+        assertEquals(1, result.getOptions().size());
 
-        UserOption uOpt = result.getUserOptions().get(0);
-        assertTrue(uOpt.isShort());
+        Option uOpt = result.getOptions().get(0);
         assertEquals("a", uOpt.getId());
         assertTrue(uOpt.hasArgs());
         assertEquals(1, uOpt.getArgs().size());
@@ -87,20 +84,19 @@ public class ArgsParserTest {
     public void parsingOptionWithArgViaAssignmentOperator() {
         Args args = new Args(new String[] { "-a=arg" });
         Schema schema = Schema.OPTIONS;
-        Collection<Option> options = List.of(
-                Option.useChar('a')
+        Collection<Opt> opts = List.of(
+                Opt.useChar('a')
                         .required()
-                        .addArgument(String.class)
+                        .addArg(Arg.of(String.class).build())
                         .build());
 
-        ArgsParser parser = new ArgsParser(args, schema, options);
+        ArgsParser parser = new ArgsParser(args, schema, opts, null);
         Result result = parser.parse();
 
-        assertTrue(result.hasUserOptions());
-        assertEquals(1, result.getUserOptions().size());
+        assertTrue(result.hasOptions());
+        assertEquals(1, result.getOptions().size());
 
-        UserOption uOpt = result.getUserOptions().get(0);
-        assertTrue(uOpt.isShort());
+        Option uOpt = result.getOptions().get(0);
         assertEquals("a", uOpt.getId());
         assertTrue(uOpt.hasArgs());
         assertEquals(1, uOpt.getArgs().size());
@@ -111,22 +107,21 @@ public class ArgsParserTest {
     public void parsingOptionWithArgs() {
         Args args = new Args(new String[] { "-a", "arg1", "arg2", "arg3" });
         Schema schema = Schema.OPTIONS;
-        Collection<Option> options = List.of(
-                Option.useChar('a')
+        Collection<Opt> opts = List.of(
+                Opt.useChar('a')
                         .required()
-                        .addArgument(String.class)
-                        .addArgument(String.class)
-                        .addArgument(String.class)
+                        .addArg(Arg.of(String.class).build())
+                        .addArg(Arg.of(String.class).build())
+                        .addArg(Arg.of(String.class).build())
                         .build());
 
-        ArgsParser parser = new ArgsParser(args, schema, options);
+        ArgsParser parser = new ArgsParser(args, schema, opts, null);
         Result result = parser.parse();
 
-        assertTrue(result.hasUserOptions());
-        assertEquals(1, result.getUserOptions().size());
+        assertTrue(result.hasOptions());
+        assertEquals(1, result.getOptions().size());
 
-        UserOption uOpt = result.getUserOptions().get(0);
-        assertTrue(uOpt.isShort());
+        Option uOpt = result.getOptions().get(0);
         assertEquals("a", uOpt.getId());
         assertTrue(uOpt.hasArgs());
         assertEquals(3, uOpt.getArgs().size());
@@ -139,13 +134,13 @@ public class ArgsParserTest {
     public void missingArg() {
         Args args = new Args(new String[] { "-a" });
         Schema schema = Schema.OPTIONS;
-        Collection<Option> options = List.of(
-                Option.useChar('a')
+        Collection<Opt> opts = List.of(
+                Opt.useChar('a')
                         .required()
-                        .addArgument(String.class)
+                        .addArg(Arg.of(String.class).build())
                         .build());
 
-        ArgsParser parser = new ArgsParser(args, schema, options);
+        ArgsParser parser = new ArgsParser(args, schema, opts, null);
         parser.parse();
     }
 
@@ -153,13 +148,34 @@ public class ArgsParserTest {
     public void illegalArg() {
         Args args = new Args(new String[] { "-a", "abc" });
         Schema schema = Schema.OPTIONS;
-        Collection<Option> options = List.of(
-                Option.useChar('a')
+        Collection<Opt> opts = List.of(
+                Opt.useChar('a')
                         .required()
-                        .addArgument(int.class)
+                        .addArg(Arg.of(int.class).build())
                         .build());
 
-        ArgsParser parser = new ArgsParser(args, schema, options);
+        ArgsParser parser = new ArgsParser(args, schema, opts, null);
         parser.parse();
+    }
+
+    @Test
+    public void parseSingleLongOption() {
+        Args args = new Args(new String[] { "--name" });
+        Schema schema = Schema.OPTIONS;
+        Collection<Opt> opts = List.of(Opt.useName("name").build());
+
+        ArgsParser parser = new ArgsParser(args, schema, opts, null);
+        Result result = parser.parse();
+
+        assertTrue(
+                "result must contain user options",
+                result.hasOptions());
+        assertTrue(
+                "result must contain exactly one user option",
+                result.getOptions().size() == 1);
+        assertFalse(
+                "user option must not have args",
+                result.getOptions().get(0).hasArgs());
+        assertEquals("name", result.getOptions().get(0).getId());
     }
 }

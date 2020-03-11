@@ -1,5 +1,6 @@
 package de.curbanov.clifw.option;
 
+import de.curbanov.clifw.argument.Arg;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -8,7 +9,7 @@ public class OptionTest {
 
     @Test
     public void simpleOption() {
-        Option opt = Option
+        Opt opt = Opt
                 .useChar('a')
                 .build();
 
@@ -26,7 +27,7 @@ public class OptionTest {
 
     @Test
     public void simpleLongOption() {
-        Option opt = Option
+        Opt opt = Opt
                 .useName("name")
                 .build();
 
@@ -44,7 +45,7 @@ public class OptionTest {
 
     @Test
     public void simpleOptionWithShortAndLongName() {
-        Option opt = Option
+        Opt opt = Opt
                 .useChar('a')
                 .longId("name")
                 .build();
@@ -55,7 +56,7 @@ public class OptionTest {
 
     @Test
     public void simpleOptionWithShortAndLongName2() {
-        Option opt = Option
+        Opt opt = Opt
                 .useName("name")
                 .shortId('a')
                 .build();
@@ -66,10 +67,10 @@ public class OptionTest {
 
     @Test
     public void simpleOptionWithArgs() {
-        Option opt = Option
+        Opt opt = Opt
                 .useChar('a')
-                .addArgument(int.class)
-                .addArgument(String.class)
+                .addArg(Arg.of(int.class).build())
+                .addArg(Arg.of(String.class).build())
                 .build();
 
         assertTrue(opt.hasArgs());
@@ -78,22 +79,22 @@ public class OptionTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void unexpectedGetArg() {
-        Option.useChar('a').build().getArgType(0);
+        Opt.useChar('a').build().getArgType(0);
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
     public void unexpectedGetArgIndex() {
-        Option.useChar('a')
-                .addArgument(int.class)
+        Opt.useChar('a')
+                .addArg(Arg.of(int.class).build())
                 .build().getArgType(1);
     }
 
     @Test
     public void requiredOption() {
-        Option opt = Option
+        Opt opt = Opt
                 .useChar('a')
                 .required()
-                .addArgument(int.class)
+                .addArg(Arg.of(int.class).build())
                 .build();
 
         assertTrue(opt.isRequired());
@@ -101,29 +102,29 @@ public class OptionTest {
 
     @Test(expected = IllegalStateException.class)
     public void requiredOptionWithoutArgs() {
-        Option.useChar('a')
+        Opt.useChar('a')
                 .required()
                 .build();
     }
 
     @Test(expected = IllegalStateException.class)
     public void unexpectedMultipleCall() {
-        Option.useChar('a')
+        Opt.useChar('a')
                 .shortId('b')
                 .build();
     }
 
     @Test(expected = IllegalStateException.class)
     public void unexpectedMultipleCall2() {
-        Option.useName("name")
+        Opt.useName("name")
                 .longId("another")
                 .build();
     }
 
     @Test(expected = IllegalStateException.class)
     public void unexpectedMultipleCall3() {
-        Option.useChar('a')
-                .addArgument(int.class)
+        Opt.useChar('a')
+                .addArg(Arg.of(int.class).build())
                 .required()
                 .required()
                 .build();
@@ -131,7 +132,7 @@ public class OptionTest {
 
     @Test(expected = IllegalStateException.class)
     public void unexpectedMultipleCall4() {
-        Option.useChar('a')
+        Opt.useChar('a')
                 .description("description1")
                 .description("description2")
                 .build();
@@ -139,17 +140,17 @@ public class OptionTest {
 
     @Test
     public void simpleOptionWithAllArgs() {
-        Option opt = Option
+        Opt opt = Opt
                 .useChar('a')
-                .addArgument(boolean.class)
-                .addArgument(byte.class)
-                .addArgument(char.class)
-                .addArgument(double.class)
-                .addArgument(float.class)
-                .addArgument(int.class)
-                .addArgument(long.class)
-                .addArgument(short.class)
-                .addArgument(String.class)
+                .addArg(Arg.of(boolean.class).build())
+                .addArg(Arg.of(byte.class).build())
+                .addArg(Arg.of(char.class).build())
+                .addArg(Arg.of(double.class).build())
+                .addArg(Arg.of(float.class).build())
+                .addArg(Arg.of(int.class).build())
+                .addArg(Arg.of(long.class).build())
+                .addArg(Arg.of(short.class).build())
+                .addArg(Arg.of(String.class).build())
                 .build();
 
         assertTrue(opt.hasArgs());
@@ -158,16 +159,16 @@ public class OptionTest {
 
     @Test
     public void simpleOptionWithAllArgs2() {
-        Option opt = Option
+        Opt opt = Opt
                 .useChar('a')
-                .addArgument(Boolean.class)
-                .addArgument(Byte.class)
-                .addArgument(Character.class)
-                .addArgument(Double.class)
-                .addArgument(Float.class)
-                .addArgument(Integer.class)
-                .addArgument(Long.class)
-                .addArgument(Short.class)
+                .addArg(Arg.of(Boolean.class).build())
+                .addArg(Arg.of(Byte.class).build())
+                .addArg(Arg.of(Character.class).build())
+                .addArg(Arg.of(Double.class).build())
+                .addArg(Arg.of(Float.class).build())
+                .addArg(Arg.of(Integer.class).build())
+                .addArg(Arg.of(Long.class).build())
+                .addArg(Arg.of(Short.class).build())
                 .build();
 
         assertTrue(opt.hasArgs());
@@ -175,16 +176,16 @@ public class OptionTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void uexpectedVoidArg() {
-        Option.useChar('a')
-                .addArgument(void.class)
+    public void unexpectedVoidArg() {
+        Opt.useChar('a')
+                .addArg(Arg.of(void.class).build())
                 .build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void unexpectedArgType() {
-        Option.useChar('a')
-                .addArgument(Object.class)
+        Opt.useChar('a')
+                .addArg(Arg.of(Object.class).build())
                 .build();
     }
 }

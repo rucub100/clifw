@@ -1,15 +1,17 @@
 package de.curbanov.clifw.option;
 
+import de.curbanov.clifw.argument.Arg;
+
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class OptionBuilderBase<T extends OptionBuilderBase<T>> implements OptionBuilder<T> {
+abstract class OptBuilderBase<T extends OptBuilderBase<T>> implements OptBuilder<T> {
 
     private char shortId = 0;
     private String longId = "";
     private String description = "";
     private boolean required = false;
-    private List<Class> args = new ArrayList<>();
+    private List<Arg> args = new ArrayList<>();
 
     char getShortId() {
         return this.shortId;
@@ -27,7 +29,7 @@ abstract class OptionBuilderBase<T extends OptionBuilderBase<T>> implements Opti
         return this.required;
     }
 
-    List<Class> getArgs() {
+    List<Arg> getArgs() {
         return this.args;
     }
 
@@ -54,20 +56,15 @@ abstract class OptionBuilderBase<T extends OptionBuilderBase<T>> implements Opti
     }
 
     @Override
-    public T addArgument(Class clazz) {
-        if ((clazz.isPrimitive() && !clazz.equals(void.class)) ||
-                clazz.equals(String.class) ||
-                clazz.equals(Boolean.class) ||
-                clazz.equals(Byte.class) ||
-                clazz.equals(Character.class) ||
-                clazz.equals(Double.class) ||
-                clazz.equals(Float.class) ||
-                clazz.equals(Integer.class) ||
-                clazz.equals(Long.class) ||
-                clazz.equals(Short.class)) {
-            this.args.add(clazz);
-        } else {
-            throw new IllegalArgumentException();
+    public T addArg(Arg arg) {
+        this.args.add(arg);
+        return (T) this;
+    }
+
+    @Override
+    public T addArgs(Arg... args) {
+        for (Arg arg : args) {
+            this.args.add(arg);
         }
 
         return (T) this;
@@ -96,9 +93,9 @@ abstract class OptionBuilderBase<T extends OptionBuilderBase<T>> implements Opti
     }
 
     @Override
-    public Option build() {
+    public Opt build() {
         if (!this.required || this.args.size() > 0) {
-            return new Option(this);
+            return new Opt(this);
         } else {
             throw new IllegalStateException();
         }

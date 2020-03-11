@@ -14,11 +14,21 @@ class SyntaxAnalyzer {
             case OPTIONS:
                 syntacticAnalysisOfOptions(tokens, tree);
                 break;
+            case ARGUMENTS:
+                syntacticAnalysisOfArguments(tokens, tree);
+                break;
             default:
                 throw new UnsupportedOperationException("not yet implemented");
         }
 
         return tree;
+    }
+
+    private static void syntacticAnalysisOfArguments(List<Token> tokens, ArgsTree tree) {
+        for (int i = 0; i < tokens.size(); i++) {
+            ensureLexicalCategory(tokens.get(i), LexicalCategory.LITERAL);
+            tree.addChildTo(tree.getRoot(), tokens.get(i));
+        }
     }
 
     private static void syntacticAnalysisOfOptions(List<Token> tokens, ArgsTree tree) {

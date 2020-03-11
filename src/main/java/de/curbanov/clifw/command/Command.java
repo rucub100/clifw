@@ -2,9 +2,13 @@ package de.curbanov.clifw.command;
 
 public class Command {
 
-    private final String name;
+    private final Cmd blueprint;
 
-    public Command(String name) {
-        this.name = name;
+    public Command(Cmd cmd) {
+        this.blueprint = cmd;
+    }
+
+    public Cmd getBlueprint() {
+        return this.blueprint;
     }
 }

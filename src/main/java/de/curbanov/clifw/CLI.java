@@ -1,7 +1,8 @@
 package de.curbanov.clifw;
 
-import de.curbanov.clifw.command.Command;
-import de.curbanov.clifw.option.Option;
+import de.curbanov.clifw.argument.Arg;
+import de.curbanov.clifw.command.Cmd;
+import de.curbanov.clifw.option.Opt;
 import de.curbanov.clifw.parsing.ArgsParser;
 import de.curbanov.clifw.parsing.Result;
 
@@ -15,19 +16,21 @@ import java.util.List;
  */
 public class CLI {
 
-    private final Args args;
+    private final Args input;
     private final Schema schema;
 
-    private final List<Option> options;
-    private final List<Command> commands;
+    private final List<Opt> opts;
+    private final List<Arg> args;
+    private final List<Cmd> cmds;
 
     private Result result = null;
 
     CLI(CliBuilderBase builder) {
-        this.args = builder.getArgs();
+        this.input = builder.getInput();
         this.schema = builder.getSchema();
-        this.options = builder.getOptions();
-        this.commands = builder.getCommands();
+        this.opts = builder.getOpts();
+        this.args = builder.getArgs();
+        this.cmds = builder.getCmds();
     }
 
     public static ArgsCliBuilder setArgs(String[] args) {
@@ -58,7 +61,7 @@ public class CLI {
                 throw new UnsupportedOperationException();
             }
 
-            ArgsParser parser = new ArgsParser(this.args, this.schema, this.options);
+            ArgsParser parser = new ArgsParser(this.input, this.schema, this.opts, this.args);
             result = parser.parse();
         }
     }

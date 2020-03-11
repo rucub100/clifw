@@ -1,45 +1,52 @@
 package de.curbanov.clifw;
 
-import de.curbanov.clifw.command.Command;
-import de.curbanov.clifw.option.Option;
+import de.curbanov.clifw.argument.Arg;
+import de.curbanov.clifw.command.Cmd;
+import de.curbanov.clifw.option.Opt;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CliBuilderBase<T extends CliBuilderBase<T>> implements CliBuilder<T> {
 
-    private final Args args;
+    private final Args input;
     private final Schema schema;
 
-    private final List<Option> options;
-    private final List<Command> commands;
+    private final List<Arg> args;
+    private final List<Opt> opts;
+    private final List<Cmd> cmds;
 
-    CliBuilderBase(Args args, Schema schema) {
-        this.args = args;
+    CliBuilderBase(Args input, Schema schema) {
+        this.input = input;
         this.schema = schema;
-        this.options = schema.allowsOptions() ? new ArrayList<Option>() : null;
-        this.commands = schema.allowsCommands() ? new ArrayList<Command>() : null;
+        this.args = schema.allowsArgutments() ? new ArrayList<>() : null;
+        this.opts = schema.allowsOptions() ? new ArrayList<>() : null;
+        this.cmds = schema.allowsCommands() ? new ArrayList<>() : null;
     }
 
-    Args getArgs() {
-        return this.args;
+    Args getInput() {
+        return this.input;
     }
 
     Schema getSchema() {
         return this.schema;
     }
 
-    List<Option> getOptions() {
-        return this.options;
+    List<Arg> getArgs() {
+        return this.args;
     }
 
-    List<Command> getCommands() {
-        return this.commands;
+    List<Opt> getOpts() {
+        return this.opts;
     }
 
-    public T addOption(Option option) {
-        if (schema.allowsOptions()) {
-            this.options.add(option);
+    List<Cmd> getCmds() {
+        return this.cmds;
+    }
+
+    public T addArg(Arg arg) {
+        if (schema.allowsArgutments()) {
+            this.args.add(arg);
         } else {
             throw new UnsupportedOperationException();
         }
@@ -47,10 +54,10 @@ public abstract class CliBuilderBase<T extends CliBuilderBase<T>> implements Cli
         return (T) this;
     }
 
-    public T addOptions(Option... options) {
-        if (schema.allowsOptions()) {
-            for (Option opt : options) {
-                this.options.add(opt);
+    public T addArgs(Arg... args) {
+        if (schema.allowsArgutments()) {
+            for (Arg arg : args) {
+                this.args.add(arg);
             }
         } else {
             throw new UnsupportedOperationException();
@@ -59,9 +66,9 @@ public abstract class CliBuilderBase<T extends CliBuilderBase<T>> implements Cli
         return (T) this;
     }
 
-    public T addCommand(Command command) {
-        if (schema.allowsCommands()) {
-            this.commands.add(command);
+    public T addOption(Opt opt) {
+        if (schema.allowsOptions()) {
+            this.opts.add(opt);
         } else {
             throw new UnsupportedOperationException();
         }
@@ -69,10 +76,32 @@ public abstract class CliBuilderBase<T extends CliBuilderBase<T>> implements Cli
         return (T) this;
     }
 
-    public T addCommands(Command... commands) {
+    public T addOptions(Opt... opts) {
+        if (schema.allowsOptions()) {
+            for (Opt opt : opts) {
+                this.opts.add(opt);
+            }
+        } else {
+            throw new UnsupportedOperationException();
+        }
+
+        return (T) this;
+    }
+
+    public T addCommand(Cmd cmd) {
         if (schema.allowsCommands()) {
-            for (Command cmd : commands) {
-                this.commands.add(cmd);
+            this.cmds.add(cmd);
+        } else {
+            throw new UnsupportedOperationException();
+        }
+
+        return (T) this;
+    }
+
+    public T addCommands(Cmd... cmds) {
+        if (schema.allowsCommands()) {
+            for (Cmd cmd : cmds) {
+                this.cmds.add(cmd);
             }
         } else {
             throw new UnsupportedOperationException();
