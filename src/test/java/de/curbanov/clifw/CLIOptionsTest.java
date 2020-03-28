@@ -4,6 +4,7 @@ import de.curbanov.clifw.argument.Arg;
 import de.curbanov.clifw.option.Opt;
 
 import de.curbanov.clifw.option.Option;
+import de.curbanov.clifw.parsing.ParsingException;
 import de.curbanov.clifw.parsing.Result;
 import org.junit.Test;
 
@@ -152,5 +153,23 @@ public class CLIOptionsTest {
         Option opt = res.getOptions().get(0);
         assertFalse(opt.hasArgs());
         assertEquals("name", opt.getId());
+    }
+
+    @Test(expected = ParsingException.class)
+    public void missingRequiredOption() {
+        String[] args = new String[] { "-a" };
+        CLI cli = CLI.setArgs(args)
+                .addOption(Opt
+                        .useChar('a')
+                        .description("this is a short test option")
+                        .build())
+                .addOption(Opt
+                        .useChar('b')
+                        .addArg(Arg.of(int.class).build())
+                        .required()
+                        .build())
+                .build();
+
+        cli.run();
     }
 }

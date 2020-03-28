@@ -20,56 +20,17 @@ class ContextAnalyzer {
                 options.add(o);
             } else if (!args.isEmpty() && tree.getDataFrom(node).getName() == LexicalCategory.LITERAL) {
                 Arg arg = args.get(argsCnt++);
-                Argument a;
-                Class clazz = arg.getClazz();
                 String strValue = tree.getDataFrom(node).getValue();
-
-                if (clazz.equals(boolean.class) || clazz.equals(Boolean.class)) {
-                    a = new Argument<>(arg, Boolean.parseBoolean(strValue));
-                } else if (clazz.equals(byte.class) || clazz.equals(Byte.class)) {
-                    a = new Argument<>(arg, Byte.parseByte(strValue));
-                } else if (clazz.equals(char.class) || clazz.equals(Character.class)) {
-                    if (strValue == null || strValue.isEmpty() || strValue.length() != 1) {
-                        throw new ParsingException(Phase.SEMANTIC_ANALYSIS);
-                    }
-
-                    a = new Argument<>(arg, strValue.charAt(0));
-                } else if (clazz.equals(double.class) || clazz.equals(Double.class)) {
-                    a = new Argument<>(arg, Double.parseDouble(strValue));
-                } else if (clazz.equals(float.class) || clazz.equals(Float.class)) {
-                    a = new Argument<>(arg, Float.parseFloat(strValue));
-                } else if (clazz.equals(int.class) || clazz.equals(Integer.class)) {
-                    a = new Argument<>(arg, Integer.parseInt(strValue));
-                } else if (clazz.equals(long.class) || clazz.equals(Long.class)) {
-                    a = new Argument<>(arg, Long.parseLong(strValue));
-                } else if (clazz.equals(short.class) || clazz.equals(Short.class)) {
-                    a = new Argument<>(arg, Short.parseShort(strValue));
-                } else {
-                    a = new Argument<>(arg, strValue);
-                }
-
-                arguments.add(a);
+                arguments.add(parseArg(arg, strValue));
             }
         }
 
-        boolean requiredOptIsPresent = opts.stream().filter(o -> o.isRequired()).allMatch(o -> {
-            boolean _requiredOptIsPresent = false;
+        if (!checkRequiredOpts(opts, options)) {
+            throw new ParsingException(Phase.SEMANTIC_ANALYSIS, "Required options are missing!");
+        }
 
-            if (o.hasShortName()) {
-                _requiredOptIsPresent = options
-                        .stream()
-                        .anyMatch(u -> u.getId().contentEquals(o.getShortName()));
-            } else if (o.hasLongName()) {
-                _requiredOptIsPresent = options
-                        .stream()
-                        .anyMatch(u -> u.getId().contentEquals(o.getLongName()));
-            }
-
-            return _requiredOptIsPresent;
-        });
-
-        if (!requiredOptIsPresent) {
-            throw new IllegalStateException();
+        if (args.size() > argsCnt) {
+            throw new ParsingException(Phase.SEMANTIC_ANALYSIS, "Required arguments are missing!");
         }
 
         return new Result(options, arguments);
@@ -139,5 +100,54 @@ class ContextAnalyzer {
         }
 
         return new Option(option.get(), strArgs);
+    }
+
+    private static Argument parseArg(Arg arg, String strArg) {
+        Argument a;
+        Class clazz = arg.getClazz();
+
+        if (clazz.equals(boolean.class) || clazz.equals(Boolean.class)) {
+            a = new Argument<>(arg, Boolean.parseBoolean(strArg));
+        } else if (clazz.equals(byte.class) || clazz.equals(Byte.class)) {
+            a = new Argument<>(arg, Byte.parseByte(strArg));
+        } else if (clazz.equals(char.class) || clazz.equals(Character.class)) {
+            if (strArg == null || strArg.isEmpty() || strArg.length() != 1) {
+                throw new ParsingException(Phase.SEMANTIC_ANALYSIS);
+            }
+
+            a = new Argument<>(arg, strArg.charAt(0));
+        } else if (clazz.equals(double.class) || clazz.equals(Double.class)) {
+            a = new Argument<>(arg, Double.parseDouble(strArg));
+        } else if (clazz.equals(float.class) || clazz.equals(Float.class)) {
+            a = new Argument<>(arg, Float.parseFloat(strArg));
+        } else if (clazz.equals(int.class) || clazz.equals(Integer.class)) {
+            a = new Argument<>(arg, Integer.parseInt(strArg));
+        } else if (clazz.equals(long.class) || clazz.equals(Long.class)) {
+            a = new Argument<>(arg, Long.parseLong(strArg));
+        } else if (clazz.equals(short.class) || clazz.equals(Short.class)) {
+            a = new Argument<>(arg, Short.parseShort(strArg));
+        } else {
+            a = new Argument<>(arg, strArg);
+        }
+
+        return a;
+    }
+
+    private static boolean checkRequiredOpts(Collection<Opt> opts, List<Option> options) {
+        return opts.stream().filter(o -> o.isRequired()).allMatch(o -> {
+            boolean requiredOptIsPresent = false;
+
+            if (o.hasShortName()) {
+                requiredOptIsPresent = options
+                        .stream()
+                        .anyMatch(u -> u.getId().contentEquals(o.getShortName()));
+            } else if (o.hasLongName()) {
+                requiredOptIsPresent = options
+                        .stream()
+                        .anyMatch(u -> u.getId().contentEquals(o.getLongName()));
+            }
+
+            return requiredOptIsPresent;
+        });
     }
 }

@@ -131,7 +131,7 @@ public class ArgsParserTest {
     }
 
     @Test(expected = ParsingException.class)
-    public void missingArg() {
+    public void missingOptionArg() {
         Args args = new Args(new String[] { "-a" });
         Schema schema = Schema.OPTIONS;
         Collection<Opt> opts = List.of(
@@ -145,7 +145,7 @@ public class ArgsParserTest {
     }
 
     @Test(expected = ParsingException.class)
-    public void illegalArg() {
+    public void illegalOptionArg() {
         Args args = new Args(new String[] { "-a", "abc" });
         Schema schema = Schema.OPTIONS;
         Collection<Opt> opts = List.of(
