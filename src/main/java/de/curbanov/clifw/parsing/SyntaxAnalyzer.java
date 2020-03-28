@@ -1,12 +1,16 @@
 package de.curbanov.clifw.parsing;
 
 import de.curbanov.clifw.Schema;
+import de.curbanov.clifw.argument.Arg;
+import de.curbanov.clifw.option.Opt;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 class SyntaxAnalyzer {
 
-    public static ArgsTree syntacticAnalysis(List<Token> tokens, Schema schema) {
+    public static ArgsTree syntacticAnalysis(List<Token> tokens, Schema schema, Collection<Opt> opts, List<Arg> args) {
         ArgsTree tree = new ArgsTree();
         tree.setRoot(new Token(LexicalCategory.UNKNOWN, ""));
 
@@ -17,11 +21,29 @@ class SyntaxAnalyzer {
             case ARGUMENTS:
                 syntacticAnalysisOfArguments(tokens, tree);
                 break;
+            case OPTIONS_ARGUMENTS:
+                syntacticAnalysisOfOptionsAndArguments(tokens, tree, opts, args);
+                break;
             default:
                 throw new UnsupportedOperationException("not yet implemented");
         }
 
         return tree;
+    }
+
+    private static void syntacticAnalysisOfOptionsAndArguments(
+            List<Token> tokens,
+            ArgsTree tree,
+            Collection<Opt> opts,
+            List<Arg> args) {
+        if (tokens.size() < args.size()) {
+            throw new ParsingException(Phase.SYNTAX_ANAlYSIS, "User input contains too few arguments!");
+        }
+
+        List<Token> optTokens = tokens.subList(0, tokens.size() - args.size());
+        List<Token> argTokens = tokens.subList(tokens.size() - args.size(), tokens.size());
+        syntacticAnalysisOfOptions(optTokens, tree);
+        syntacticAnalysisOfArguments(argTokens, tree);
     }
 
     private static void syntacticAnalysisOfArguments(List<Token> tokens, ArgsTree tree) {

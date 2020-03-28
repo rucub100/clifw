@@ -29,7 +29,7 @@ public class ArgsParser {
             List<Token> tokens = Tokenizer.lexicalAnalysis(this.input);
 
             this.currentPhase = Phase.SYNTAX_ANAlYSIS;
-            ArgsTree tree = SyntaxAnalyzer.syntacticAnalysis(tokens, this.schema);
+            ArgsTree tree = SyntaxAnalyzer.syntacticAnalysis(tokens, this.schema, this.opts, this.args);
 
             this.currentPhase = Phase.SEMANTIC_ANALYSIS;
             return ContextAnalyzer.semanticAnalysis(tree, this.opts, this.args);
