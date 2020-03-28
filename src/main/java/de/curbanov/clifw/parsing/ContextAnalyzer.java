@@ -1,7 +1,10 @@
 package de.curbanov.clifw.parsing;
 
+import de.curbanov.clifw.Schema;
 import de.curbanov.clifw.argument.Arg;
 import de.curbanov.clifw.argument.Argument;
+import de.curbanov.clifw.command.Cmd;
+import de.curbanov.clifw.command.Command;
 import de.curbanov.clifw.option.Opt;
 import de.curbanov.clifw.option.Option;
 
@@ -9,34 +12,62 @@ import java.util.*;
 
 class ContextAnalyzer {
 
-    public static Result semanticAnalysis(ArgsTree tree, Collection<Opt> opts, List<Arg> args) {
-        List<Option> options = new ArrayList<>(tree.getChildrenFrom(tree.getRoot()).size());
-        List<Argument<?>> arguments = new ArrayList<>(tree.getChildrenFrom(tree.getRoot()).size());
-        int argsCnt = 0;
+    public static Result semanticAnalysis(
+            Tree<Token> tree,
+            Schema schema,
+            Collection<Opt> opts,
+            List<Arg> args,
+            Collection<Cmd> cmds) {
+        switch (schema) {
+            case OPTIONS:
+            case ARGUMENTS:
+            case OPTIONS_ARGUMENTS:
+                List<Option> options = new ArrayList<>(tree.getChildrenFrom(tree.getRoot()).size());
+                List<Argument<?>> arguments = new ArrayList<>(tree.getChildrenFrom(tree.getRoot()).size());
+                int argsCnt = 0;
 
-        for (Tree.Node<Token> node : tree.getChildrenFrom(tree.getRoot())) {
-            if (!opts.isEmpty() && tree.getDataFrom(node).getName() == LexicalCategory.OPERATOR) {
-                Option o = analyzeOption(tree, opts, node);
-                options.add(o);
-            } else if (!args.isEmpty() && tree.getDataFrom(node).getName() == LexicalCategory.LITERAL) {
-                Arg arg = args.get(argsCnt++);
-                String strValue = tree.getDataFrom(node).getValue();
-                arguments.add(parseArg(arg, strValue));
-            }
+                for (Tree.Node<Token> node : tree.getChildrenFrom(tree.getRoot())) {
+                    if (!opts.isEmpty() && tree.getDataFrom(node).getName() == LexicalCategory.OPERATOR) {
+                        Option o = analyzeOption(tree, opts, node);
+                        options.add(o);
+                    } else if (!args.isEmpty() && tree.getDataFrom(node).getName() == LexicalCategory.LITERAL) {
+                        Arg arg = args.get(argsCnt++);
+                        String strValue = tree.getDataFrom(node).getValue();
+                        arguments.add(parseArg(arg, strValue));
+                    }
+                }
+
+                if (!checkRequiredOpts(opts, options)) {
+                    throw new ParsingException(Phase.SEMANTIC_ANALYSIS, "Required options are missing!");
+                }
+
+                if (args.size() > argsCnt) {
+                    throw new ParsingException(Phase.SEMANTIC_ANALYSIS, "Required arguments are missing!");
+                }
+
+                return new Result(options, arguments);
+            case COMMANDS:
+                Cmd cmd = cmds.stream()
+                        .filter(x -> x.getName().equals(
+                                tree.getDataFrom(
+                                        tree.getChildrenFrom(tree.getRoot()).get(0)).getValue()))
+                        .findAny()
+                        .get();
+                Tree<Token> subTree = tree.getSubTree(tree.getChildrenFrom(tree.getRoot()).get(0));
+                Result nestedResult = semanticAnalysis(
+                        subTree,
+                        Schema.OPTIONS_ARGUMENTS,
+                        cmd.getOpts(),
+                        cmd.getArgs(),
+                        null);
+                Command command = new Command(cmd, nestedResult.getOptions(), nestedResult.getArguments());
+                return new Result(command);
+            default:
+                throw new UnsupportedOperationException();
         }
-
-        if (!checkRequiredOpts(opts, options)) {
-            throw new ParsingException(Phase.SEMANTIC_ANALYSIS, "Required options are missing!");
-        }
-
-        if (args.size() > argsCnt) {
-            throw new ParsingException(Phase.SEMANTIC_ANALYSIS, "Required arguments are missing!");
-        }
-
-        return new Result(options, arguments);
     }
 
-    private static Option analyzeOption(ArgsTree tree, Collection<Opt> opts, Tree.Node<Token> node) {
+    private static Option analyzeOption(Tree<Token> tree, Collection<Opt> opts, Tree.Node<Token> node) {
         Token t = tree.getDataFrom(node);
         boolean shortOpt = t.getValue().length() < 2;
         Tree.Node<Token> id = tree.getChildrenFrom(node).get(0);

@@ -21,7 +21,7 @@ public class ArgsParserTest {
         Schema schema = Schema.OPTIONS;
         Collection<Opt> opts = List.of(Opt.useChar('a').build());
 
-        ArgsParser parser = new ArgsParser(args, schema, opts, null);
+        ArgsParser parser = new ArgsParser(args, schema, opts, null, null);
         Result result = parser.parse();
 
         assertTrue(
@@ -42,7 +42,7 @@ public class ArgsParserTest {
         Schema schema = Schema.OPTIONS;
         Collection<Opt> opts = List.of(Opt.useChar('a').build());
 
-        ArgsParser parser = new ArgsParser(args, schema, opts, null);
+        ArgsParser parser = new ArgsParser(args, schema, opts, null, null);
         parser.parse();
     }
 
@@ -54,7 +54,7 @@ public class ArgsParserTest {
                 Opt.useChar('a').build(),
                 Opt.useChar('b').required().addArg(Arg.of(int.class).build()).build());
 
-        ArgsParser parser = new ArgsParser(args, schema, opts, null);
+        ArgsParser parser = new ArgsParser(args, schema, opts, null, null);
         parser.parse();
     }
 
@@ -67,7 +67,7 @@ public class ArgsParserTest {
                         .required()
                         .addArg(Arg.of(String.class).build())
                         .build());
-        ArgsParser parser = new ArgsParser(args, schema, opts, null);
+        ArgsParser parser = new ArgsParser(args, schema, opts, null, null);
         Result result = parser.parse();
 
         assertTrue(result.hasOptions());
@@ -90,7 +90,7 @@ public class ArgsParserTest {
                         .addArg(Arg.of(String.class).build())
                         .build());
 
-        ArgsParser parser = new ArgsParser(args, schema, opts, null);
+        ArgsParser parser = new ArgsParser(args, schema, opts, null, null);
         Result result = parser.parse();
 
         assertTrue(result.hasOptions());
@@ -115,7 +115,7 @@ public class ArgsParserTest {
                         .addArg(Arg.of(String.class).build())
                         .build());
 
-        ArgsParser parser = new ArgsParser(args, schema, opts, null);
+        ArgsParser parser = new ArgsParser(args, schema, opts, null, null);
         Result result = parser.parse();
 
         assertTrue(result.hasOptions());
@@ -140,7 +140,7 @@ public class ArgsParserTest {
                         .addArg(Arg.of(String.class).build())
                         .build());
 
-        ArgsParser parser = new ArgsParser(args, schema, opts, null);
+        ArgsParser parser = new ArgsParser(args, schema, opts, null, null);
         parser.parse();
     }
 
@@ -154,7 +154,7 @@ public class ArgsParserTest {
                         .addArg(Arg.of(int.class).build())
                         .build());
 
-        ArgsParser parser = new ArgsParser(args, schema, opts, null);
+        ArgsParser parser = new ArgsParser(args, schema, opts, null, null);
         parser.parse();
     }
 
@@ -164,7 +164,7 @@ public class ArgsParserTest {
         Schema schema = Schema.OPTIONS;
         Collection<Opt> opts = List.of(Opt.useName("name").build());
 
-        ArgsParser parser = new ArgsParser(args, schema, opts, null);
+        ArgsParser parser = new ArgsParser(args, schema, opts, null, null);
         Result result = parser.parse();
 
         assertTrue(

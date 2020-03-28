@@ -32,8 +32,16 @@ public class Cmd {
         return this.description;
     }
 
+    public boolean hasOpts() {
+        return this.opts != null && this.opts.size() > 0;
+    }
+
     public List<Opt> getOpts() {
         return Collections.unmodifiableList(this.opts);
+    }
+
+    public boolean hasArgs() {
+        return this.args != null && this.args.size() > 0;
     }
 
     public List<Arg> getArgs() {

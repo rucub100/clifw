@@ -29,8 +29,7 @@ abstract class CmdBuilderBase<T extends CmdBuilderBase<T>> implements CmdBuilder
         return this.args;
     }
 
-    @Override
-    public T name(String name) {
+    T name(String name) {
         if (this.name.isEmpty()) {
             this.name = name;
         } else {

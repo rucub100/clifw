@@ -3,8 +3,6 @@ package de.curbanov.clifw.parsing;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArgsTree extends Tree<Token> {}
-
 class Tree<T> {
 
     private Node<T> root;
@@ -18,6 +16,15 @@ class Tree<T> {
         this.root.parent = null;
         this.root.children = new ArrayList<>();
         this.root.data = data;
+    }
+
+    public Tree<T> getSubTree(Node<T> node) {
+        Tree<T> subTree = new Tree<>();
+        subTree.root = new Node<>();
+        subTree.root.parent = null;
+        subTree.root.children = node.children;
+        subTree.root.data = node.data;
+        return subTree;
     }
 
     public List<Node<T>> getChildrenFrom(Node<T> node) {
