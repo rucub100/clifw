@@ -18,8 +18,7 @@ abstract class ArgBuilderBase<T extends ArgBuilderBase<T>> implements ArgBuilder
         return this.clazz;
     }
 
-    @Override
-    public T clazz(Class<?> clazz) {
+    T clazz(Class<?> clazz) {
         if (this.clazz != null) {
             throw new IllegalStateException();
         }
