@@ -19,7 +19,7 @@ public class CLICommandsTest {
         Opt opt = Opt.useChar('l').build();
         Cmd cmd = Cmd.useName("ls").addOpt(opt).build();
         CLI cli = CLI.setArgs(args, Schema.COMMANDS)
-                .addCommand(cmd)
+                .addCmd(cmd)
                 .build();
 
         cli.run();
@@ -53,7 +53,7 @@ public class CLICommandsTest {
         Arg arg2 = Arg.of(String.class).build();
         Cmd cmd = Cmd.useName("ls").addArgs(arg1, arg2).build();
         CLI cli = CLI.setArgs(args, Schema.COMMANDS)
-                .addCommand(cmd)
+                .addCmd(cmd)
                 .build();
 
         cli.run();
@@ -81,7 +81,7 @@ public class CLICommandsTest {
         Arg arg2 = Arg.of(String.class).build();
         Cmd cmd = Cmd.useName("cmd").addArgs(arg1, arg2).addOpt(opt).build();
         CLI cli = CLI.setArgs(args, Schema.COMMANDS)
-                .addCommand(cmd)
+                .addCmd(cmd)
                 .build();
 
         cli.run();

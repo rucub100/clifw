@@ -44,6 +44,7 @@ public abstract class CliBuilderBase<T extends CliBuilderBase<T>> implements Cli
         return this.cmds;
     }
 
+    @Override
     public T addArg(Arg arg) {
         if (schema.allowsArgutments()) {
             this.args.add(arg);
@@ -54,6 +55,7 @@ public abstract class CliBuilderBase<T extends CliBuilderBase<T>> implements Cli
         return (T) this;
     }
 
+    @Override
     public T addArgs(Arg... args) {
         if (schema.allowsArgutments()) {
             for (Arg arg : args) {
@@ -66,7 +68,8 @@ public abstract class CliBuilderBase<T extends CliBuilderBase<T>> implements Cli
         return (T) this;
     }
 
-    public T addOption(Opt opt) {
+    @Override
+    public T addOpt(Opt opt) {
         if (schema.allowsOptions()) {
             this.opts.add(opt);
         } else {
@@ -76,7 +79,8 @@ public abstract class CliBuilderBase<T extends CliBuilderBase<T>> implements Cli
         return (T) this;
     }
 
-    public T addOptions(Opt... opts) {
+    @Override
+    public T addOpts(Opt... opts) {
         if (schema.allowsOptions()) {
             for (Opt opt : opts) {
                 this.opts.add(opt);
@@ -88,7 +92,8 @@ public abstract class CliBuilderBase<T extends CliBuilderBase<T>> implements Cli
         return (T) this;
     }
 
-    public T addCommand(Cmd cmd) {
+    @Override
+    public T addCmd(Cmd cmd) {
         if (schema.allowsCommands()) {
             this.cmds.add(cmd);
         } else {
@@ -98,7 +103,8 @@ public abstract class CliBuilderBase<T extends CliBuilderBase<T>> implements Cli
         return (T) this;
     }
 
-    public T addCommands(Cmd... cmds) {
+    @Override
+    public T addCmds(Cmd... cmds) {
         if (schema.allowsCommands()) {
             for (Cmd cmd : cmds) {
                 this.cmds.add(cmd);
@@ -110,6 +116,7 @@ public abstract class CliBuilderBase<T extends CliBuilderBase<T>> implements Cli
         return (T) this;
     }
 
+    @Override
     public CLI build() {
         return new CLI(this);
     }

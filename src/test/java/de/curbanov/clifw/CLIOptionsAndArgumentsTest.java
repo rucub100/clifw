@@ -18,7 +18,7 @@ public class CLIOptionsAndArgumentsTest {
         Opt opt = Opt.useChar('o').build();
         Arg arg = Arg.of(String.class).build();
         CLI cli = CLI.setArgs(args, Schema.OPTIONS_ARGUMENTS)
-                .addOption(opt)
+                .addOpt(opt)
                 .addArg(arg)
                 .build();
 
@@ -53,7 +53,7 @@ public class CLIOptionsAndArgumentsTest {
         Opt opt = Opt.useChar('o').addArg(oarg).build();
         Arg arg = Arg.of(String.class).build();
         CLI cli = CLI.setArgs(args, Schema.OPTIONS_ARGUMENTS)
-                .addOption(opt)
+                .addOpt(opt)
                 .addArg(arg)
                 .build();
 
@@ -90,7 +90,7 @@ public class CLIOptionsAndArgumentsTest {
         Opt opt = Opt.useChar('o').addArg(oarg).build();
         Arg arg = Arg.of(String.class).build();
         CLI cli = CLI.setArgs(args, Schema.OPTIONS_ARGUMENTS)
-                .addOption(opt)
+                .addOpt(opt)
                 .addArg(arg)
                 .build();
 
@@ -128,7 +128,7 @@ public class CLIOptionsAndArgumentsTest {
         Opt opt = Opt.useChar('o').longId("option").addArgs(oarg1, oarg2).build();
         Arg arg = Arg.of(String.class).build();
         CLI cli = CLI.setArgs(args, Schema.OPTIONS_ARGUMENTS)
-                .addOption(opt)
+                .addOpt(opt)
                 .addArg(arg)
                 .build();
 

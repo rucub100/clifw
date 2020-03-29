@@ -18,7 +18,7 @@ public class CLIOptionsTest {
     public void singleOption() {
         String[] args = new String[] { "-a" };
         CLI cli = CLI.setArgs(args)
-                .addOption(Opt
+                .addOpt(Opt
                         .useChar('a')
                         .description("this is a short test option")
                         .build())
@@ -44,7 +44,7 @@ public class CLIOptionsTest {
     public void singleOptionNotRequiredAndAbsent() {
         String[] args = new String[0];
         CLI cli = CLI.setArgs(args)
-                .addOption(Opt
+                .addOpt(Opt
                         .useChar('a')
                         .description("this is a short test option")
                         .build())
@@ -66,7 +66,7 @@ public class CLIOptionsTest {
     public void singleLongOption() {
         String[] args = new String[] { "--name" };
         CLI cli = CLI.setArgs(args)
-                .addOption(Opt
+                .addOpt(Opt
                         .useName("name")
                         .description("this is a long test option")
                         .build())
@@ -92,7 +92,7 @@ public class CLIOptionsTest {
     public void singleOptionWithStringArg() {
         String[] args = new String[] { "-a", "test" };
         CLI cli = CLI.setArgs(args)
-                .addOption(Opt
+                .addOpt(Opt
                         .useChar('a')
                         .addArg(Arg.of(String.class).build())
                         .description("this is a short test option with an arg")
@@ -114,7 +114,7 @@ public class CLIOptionsTest {
     public void singleLongShortOptionWithArgs() {
         String[] args = new String[] { "--name", "123456789", "test", "b" };
         CLI cli = CLI.setArgs(args)
-                .addOption(Opt
+                .addOpt(Opt
                         .useChar('a')
                         .addArg(Arg.of(long.class).build())
                         .addArg(Arg.of(String.class).build())
@@ -141,7 +141,7 @@ public class CLIOptionsTest {
     public void multipleOptions() {
         String[] args = new String[] { "--name" };
         CLI cli = CLI.setArgs(args)
-                .addOptions(
+                .addOpts(
                         Opt.useChar('a').build(),
                         Opt.useName("name").build())
                 .build();
@@ -159,11 +159,11 @@ public class CLIOptionsTest {
     public void missingRequiredOption() {
         String[] args = new String[] { "-a" };
         CLI cli = CLI.setArgs(args)
-                .addOption(Opt
+                .addOpt(Opt
                         .useChar('a')
                         .description("this is a short test option")
                         .build())
-                .addOption(Opt
+                .addOpt(Opt
                         .useChar('b')
                         .addArg(Arg.of(int.class).build())
                         .required()
