@@ -9,7 +9,7 @@ This is a convenient solution that offers a modern, descriptive and fluent manne
 ```java
 public static void main(String[] args) {
     CLI cli = CLI.setArgs(args) // args = new String[] { "-a" }
-        .addOption(Opt
+        .addOpt(Opt
             .useChar('a')
             .description("this is a short test option")
             .build())
