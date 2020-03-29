@@ -115,9 +115,4 @@ public abstract class CliBuilderBase<T extends CliBuilderBase<T>> implements Cli
 
         return (T) this;
     }
-
-    @Override
-    public CLI build() {
-        return new CLI(this);
-    }
 }

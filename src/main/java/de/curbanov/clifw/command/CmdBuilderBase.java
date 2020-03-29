@@ -5,6 +5,7 @@ import de.curbanov.clifw.option.Opt;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 abstract class CmdBuilderBase<T extends CmdBuilderBase<T>> implements CmdBuilder<T> {
 
@@ -12,6 +13,7 @@ abstract class CmdBuilderBase<T extends CmdBuilderBase<T>> implements CmdBuilder
     private String description = "";
     private List<Opt> opts = new ArrayList<>();
     private List<Arg> args = new ArrayList<>();
+    private Consumer<Command> consumer = null;
 
     String getName() {
         return name;
@@ -27,6 +29,10 @@ abstract class CmdBuilderBase<T extends CmdBuilderBase<T>> implements CmdBuilder
 
     List<Arg> getArgs() {
         return this.args;
+    }
+
+    Consumer<Command> getConsumer() {
+        return this.consumer;
     }
 
     T name(String name) {
@@ -77,6 +83,16 @@ abstract class CmdBuilderBase<T extends CmdBuilderBase<T>> implements CmdBuilder
             this.args.add(arg);
         }
 
+        return (T) this;
+    }
+
+    @Override
+    public T consumer(Consumer<Command> consumer) {
+        if (this.consumer == null) {
+            this.consumer = consumer;
+        } else {
+            throw new IllegalStateException();
+        }
         return (T) this;
     }
 

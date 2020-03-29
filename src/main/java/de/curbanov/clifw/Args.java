@@ -12,6 +12,11 @@ public class Args implements Iterable<String> {
         this.args = args;
     }
 
+    public static Args fromString(String strArgs) {
+        String[] tmp = strArgs.split("\\s");
+        return new Args(tmp);
+    }
+
     public int length() {
         return this.args.length;
     }

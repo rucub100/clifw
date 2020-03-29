@@ -6,7 +6,8 @@ public class ArgsCliBuilder extends CliBuilderBase<ArgsCliBuilder> {
         super(args, schema);
     }
 
+    @Override
     public CLI build() {
-        return super.build();
+        return new CLI(this);
     }
 }

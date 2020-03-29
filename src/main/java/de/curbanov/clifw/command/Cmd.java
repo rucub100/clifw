@@ -5,6 +5,7 @@ import de.curbanov.clifw.option.Opt;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Cmd {
 
@@ -12,12 +13,14 @@ public class Cmd {
     private final String description;
     private final List<Opt> opts;
     private final List<Arg> args;
+    private final Consumer<Command> consumer;
 
     Cmd(CmdBuilderBase builder) {
         this.name = builder.getName();
         this.description = builder.getDescription();
         this.opts = builder.getOpts();
         this.args = builder.getArgs();
+        this.consumer = builder.getConsumer();
     }
 
     public static DefaultCmdBuilder useName(String name) {
@@ -46,5 +49,9 @@ public class Cmd {
 
     public List<Arg> getArgs() {
         return Collections.unmodifiableList(this.args);
+    }
+
+    public Consumer<Command> getConsumer() {
+        return this.consumer;
     }
 }
