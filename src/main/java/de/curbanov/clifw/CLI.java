@@ -115,6 +115,8 @@ public class CLI {
                 null);
         result = parser.parse();
 
+        // enter the shell
+
         if (enterShell != null) {
             enterShell.accept(result);
         }
@@ -122,7 +124,10 @@ public class CLI {
         Scanner scanner = new Scanner(this.inputStream == null ? System.in : this.inputStream);
 
         while (true) {
+            // print prompt string
+            this.outputStream.print("> ");
             String line = scanner.nextLine();
+
             ArgsParser cmdParser = new ArgsParser(
                     Args.fromString(line),
                     Schema.COMMANDS,
@@ -145,6 +150,7 @@ public class CLI {
                 }
             } catch (Exception ex) {
                 this.errorStream.println(ex.toString());
+                this.errorStream.println();
             }
         }
     }
