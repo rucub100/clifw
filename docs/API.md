@@ -88,6 +88,28 @@ The API is entered by calling `Cmd.useName(String name)`.
 | `getCommand` | gets the parsed user command | - | `Command` |
 
 #### `Command`
+
+| Method | Description | Parameter | Return |
+|--------|-------------|-----------|--------|
+| `getBlueprint()` | gets the corresponding blueprint object | - | `Cmd` |
+| `hasOptions()` | gets a value determine whether the command contains options | - | `boolean` |
+| `getOptions()` | gets the options parsed with the given command | - | `List<Option>` |
+| `hasArguments()` | gets a value determine whether the command contains arguments | - | `boolean` |
+| `getArguments()` | gets the arguemnts parsed with the given command | - | `List<Argument<?>>` |
+
 #### `Option`
+
+| Method | Description | Parameter | Return |
+|--------|-------------|-----------|--------|
+| `getBlueprint()` | gets the corresponding blueprint object | - | `Opt` |
+| `getId()` | gets the identifier string | - | `String` |
+| `hasArguments()` | gets a value determine whether the option contains arguments | - | `boolean` |
+| `getArguments()` | gets the arguemnts parsed with the given option | - | `List<Argument<?>>` |
+
 #### `Argument`
+
+| Method | Description | Parameter | Return |
+|--------|-------------|-----------|--------|
+| `getBlueprint()` | gets the corresponding blueprint object | - | `Arg` |
+| `getValue()` | gets the argument value | - | generic type |
 
