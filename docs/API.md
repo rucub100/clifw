@@ -30,7 +30,12 @@ The default schema is *OPTIONS*.
 
 #### `ShellCliBuilder`
 
-**TODO**
+
+| Method | Description | Parameter | Return |
+|--------|-------------|-----------|--------|
+| `whenEntering(Consumer<Result> consumer)` | sets a customer to be called when entering the shell | the consumer | `ShellCliBuilder` |
+| `globalLevelCommandConsumer(Consumer<Command> consumer)` | sets a customer to be called for each command entered | the consumer | `ShellCliBuilder` |
+| `build()` | build the CLI | - | `CLI` |
 
 #### `OptBuilder`
 
@@ -68,8 +73,21 @@ The API is entered by calling `Cmd.useName(String name)`.
 | `addOpts(Opt... opts)` | add several option blueprints | option blueprints to add | `CmdBuilder` |
 | `addArg(Arg arg)` | add an argument blueprint | argument blueprint to add | `CmdBuilder` |
 | `addArgs(Arg... args)` | add several argument blueprints | argument blueprints to add | `CmdBuilder` |
+| `consumer(Consumer<Command> consumer)` | sets a consumer to be called for the given command | the consumer | `CmdBuilder` |
 | `build()` | build the command blueprint | - | `Cmd` |
 
 ### The Result object `Result`
 
-**TODO**
+| Method | Description | Parameter | Return |
+|--------|-------------|-----------|--------|
+| `hasOptions()` | gets a value determine whether the result contains user options | - | `boolean` |
+| `getOptions()` | gets a list of parsed user options | - | `List<Option>` |
+| `hasArguments()` | gets a value determine whether the result contains parsed arguments | - | `boolean` |
+| `getArguments()` | gets a list of parsed user arguments | - | `List<Argument<?>>` |
+| `isCommand()` | gets a value determine whether the given result has parsed a command; if `true`, `hasOptions()` and `hasArguments()` is `false` but the `Command` can contain its own options and arguments.  | - | `boolean` |
+| `getCommand` | gets the parsed user command | - | `Command` |
+
+#### `Command`
+#### `Option`
+#### `Argument`
+
