@@ -10,6 +10,8 @@ import java.util.function.Consumer;
 
 public class ShellCliBuilder extends CliBuilderBase<ShellCliBuilder> {
 
+    private final CommandPrompt commandPrompt;
+
     private final InputStream inputStream;
     private final PrintStream outputStream;
     private final PrintStream errorStream;
@@ -22,13 +24,7 @@ public class ShellCliBuilder extends CliBuilderBase<ShellCliBuilder> {
         this.inputStream = System.in;
         this.outputStream = System.out;
         this.errorStream = System.err;
-    }
-
-    ShellCliBuilder(InputStream inputStream, PrintStream outputStream) {
-        super(Args.EMPTY, Schema.SHELL);
-        this.inputStream = inputStream;
-        this.outputStream = outputStream;
-        this.errorStream = System.err;
+        commandPrompt = CommandPrompt.builder(this.inputStream, this.outputStream, this.errorStream).build();
     }
 
     ShellCliBuilder(InputStream inputStream, PrintStream outputStream, PrintStream errorStream) {
@@ -36,18 +32,11 @@ public class ShellCliBuilder extends CliBuilderBase<ShellCliBuilder> {
         this.inputStream = inputStream;
         this.outputStream = outputStream;
         this.errorStream = errorStream;
+        commandPrompt = CommandPrompt.builder(this.inputStream, this.outputStream, this.errorStream).build();
     }
 
-    InputStream getInputStream() {
-        return inputStream;
-    }
-
-    PrintStream getOutputStream() {
-        return outputStream;
-    }
-
-    PrintStream getErrorStream() {
-        return errorStream;
+    CommandPrompt getCommandPrompt() {
+        return this.commandPrompt;
     }
 
     Consumer<Result> getEnterShellConsumer() {

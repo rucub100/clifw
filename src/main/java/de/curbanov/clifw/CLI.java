@@ -6,7 +6,12 @@ import de.curbanov.clifw.command.Command;
 import de.curbanov.clifw.option.Opt;
 import de.curbanov.clifw.parsing.ArgsParser;
 import de.curbanov.clifw.parsing.Result;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.List;
@@ -32,9 +37,7 @@ public class CLI {
     private final Consumer<Result> enterShell;
     private final Consumer<Command> commandConsumer;
 
-    private final InputStream inputStream;
-    private final PrintStream outputStream;
-    private final PrintStream errorStream;
+    private final CommandPrompt commandPrompt;
 
     CLI(ArgsCliBuilder builder) {
         this.input = builder.getInput();
@@ -42,11 +45,9 @@ public class CLI {
         this.opts = builder.getOpts();
         this.args = builder.getArgs();
         this.cmds = builder.getCmds();
-        this.inputStream = null;
-        this.outputStream = null;
-        this.errorStream = null;
         this.enterShell = null;
         this.commandConsumer = null;
+        this.commandPrompt = null;
     }
 
     CLI(ShellCliBuilder builder) {
@@ -55,11 +56,9 @@ public class CLI {
         this.opts = builder.getOpts();
         this.args = builder.getArgs();
         this.cmds = builder.getCmds();
-        this.inputStream = builder.getInputStream();
-        this.outputStream = builder.getOutputStream();
-        this.errorStream = builder.getErrorStream();
         this.enterShell = builder.getEnterShellConsumer();
         this.commandConsumer = builder.getDefaultCommandConsumer();
+        this.commandPrompt = builder.getCommandPrompt();
     }
 
     public static ArgsCliBuilder setArgs(String[] args) {
@@ -72,10 +71,6 @@ public class CLI {
 
     public static ShellCliBuilder useShell() {
         return new ShellCliBuilder();
-    }
-
-    public static ShellCliBuilder useShell(InputStream inputStream, PrintStream outputStream) {
-        return new ShellCliBuilder(inputStream, outputStream);
     }
 
     public static ShellCliBuilder useShell(
@@ -116,17 +111,12 @@ public class CLI {
         result = parser.parse();
 
         // enter the shell
-
         if (enterShell != null) {
             enterShell.accept(result);
         }
 
-        Scanner scanner = new Scanner(this.inputStream == null ? System.in : this.inputStream);
-
         while (true) {
-            // print prompt string
-            this.outputStream.print("> ");
-            String line = scanner.nextLine();
+            String line = this.commandPrompt.nextLine();
 
             ArgsParser cmdParser = new ArgsParser(
                     Args.fromString(line),
@@ -149,8 +139,8 @@ public class CLI {
                     }
                 }
             } catch (Exception ex) {
-                this.errorStream.println(ex.toString());
-                this.errorStream.println();
+                this.commandPrompt.getErrorStream().println(ex.toString());
+                this.commandPrompt.getErrorStream().println();
             }
         }
     }
